@@ -14,22 +14,16 @@ from collections import deque
 #declare the function 
     #misses =0
     #hits=0
-    #cacheCount=0
     #while items in requests:
-        #if cacheCount<cache: (if the cache is not full)
-            #if item is in the queue
-                #hit+=1
-             #else
-                #insert item into queue (queue will put it at the end)
-                #count it as a miss (miss +=1)
-                #cacheCount +=1
-        #else (once cache is full)
-            #if item is in the queue
-                #hit+=1
-            #else
-                #dequeue the first item (the one that has been in the cache the longest)
-                #insert the new item into the queue( will automatically be put at the end)
-                #miss+=1
+        #if item in queue:
+            #hit+=1
+        #else:
+            #miss+=1
+            #if cache is full:
+                #dequeue the first (oldest) item
+            #insert the new item (to the end)
+    #return misses
+    #return hits for initial testing
 
 #def FIFO(cache, requests):
 
