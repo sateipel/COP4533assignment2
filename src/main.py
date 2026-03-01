@@ -1,3 +1,4 @@
+from collections import deque
 #You are given:
 #A cache of capacity ( k )
 #A sequence of ( m ) requests ( r_1, r_2,.., r_m )
@@ -9,7 +10,28 @@
 
 
 #FIFO
-# Evict the item that has been in the cache the longest.
+# Evict the item that has been in the cache the longest. (aka a queue)
+#declare the function 
+    #misses =0
+    #hits=0
+    #cacheCount=0
+    #while items in requests:
+        #if cacheCount<cache: (if the cache is not full)
+            #if item is in the queue
+                #hit+=1
+             #else
+                #insert item into queue (queue will put it at the end)
+                #count it as a miss (miss +=1)
+                #cacheCount +=1
+        #else (once cache is full)
+            #if item is in the queue
+                #hit+=1
+            #else
+                #dequeue the first item (the one that has been in the cache the longest)
+                #insert the new item into the queue( will automatically be put at the end)
+                #miss+=1
+
+#def FIFO(cache, requests):
 
 #LRU
 #Evict the item whose most recent access time is the oldest.
