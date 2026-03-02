@@ -37,11 +37,31 @@ def FIFO(cache, requests):
             if len(queue)==cache:
                 queue.popleft()
             queue.append(request)
-    #return only misses once more is written, this is just for testing
-    return misses, hits
+    return misses
 
 #LRU
 #Evict the item whose most recent access time is the oldest.
+#modify the queue from FIFO so that it is updated when items are accessed again (move to the end of the queue)
+def LRU(cache, requests):
+    misses=0
+    hits=0
+    queue=deque()
+    for request in requests:
+        #remove from old position and add to end of the queue
+        #updating the queue like this keeps the ordering updated, allowing the oldest item to be popped
+        if request in queue:
+            queue.remove(request)
+            queue.append(request)
+            hits+=1
+        #a miss is the same as the FIFO
+        else:
+            misses+=1
+            if len(queue)==cache:
+                queue.popleft()
+            queue.append(request)
+    #return only misses once more is written, this is just for testing
+    return misses, hits
+
 
 #OPTFF (Belady’s Farthest-in-Future, optimal offline)
 #Among items currently in the cache, evict the one whose next request occurs farthest in the future (or never occurs again).
@@ -52,9 +72,10 @@ def FIFO(cache, requests):
 def main():
     cache=3
     requests=[1,2,3,1,2,3,4,1,2,3]
-    misses,hits=FIFO(cache, requests)
-    print(f"misses: {misses}")
-    print(f"hits: {hits}")
-#this output gives 7 misses and 3 hits (correct)
+    fifo=FIFO(cache, requests)
+    print(f"FIFO : {fifo}")
+    misses, hits=LRU(cache, requests)
+    print(f"LRU misses: {misses}, hits: {hits}")
+#this LRU output gives 7 misses and 3 hits (correct)
 
 if __name__ == "__main__": main()
