@@ -66,17 +66,22 @@ Prove that the number of misses of OPTFF is no larger than that of ( A ) on any 
 Let A= offline schedule algorithm   
 Let B=Belady’s OPTFF algorithm 
 
-Assume A\&B match and agree for the first k elements (same cache misses)  
-Now, go to the k+1th element
+Base case: (k=0), the caches are empty and there are no requests to process (A and B agree)
 
-Case 1: element is already in cache (hit)  
+Inductive hypothesis: Assume A\&B match and agree for the first k elements (same cache misses) 
+
+Inductive Step: Now, go to the k+1th element
+
+Case 1: k+1th element is already in cache (hit)  
 	Nothing is evicted from either and they are both hits.  
-Case 2: element is not in cache (miss)  
+Case 2: k+1th element is not in cache (miss)  
 	i) if A’s k+1th element and B’s k+1th element are equal, they agree so continue   
-	ii) f A’s k+1th element is not equal to B’s k+1th   
-		Say cache A selects element a  
-		Say cache B selects element b  
-		It follows that b must be equal to or further in the future than a by Belady’s  
-		Thus, we can replace a with b and have equivalent or more optimal solution  
-Continue with all elements until A=B  
-Thus, proving that B (OPTFF) cannot have a larger number of misses than A (offline schedule)
+	ii) if A’s k+1th element is not equal to B’s k+1th   
+		Cache A selects element ‘a’  
+		Cache B selects element ‘b’  
+		It follows that ‘b’ must be equal to or further in the future than ‘a’ by Belady’s  
+		So, page ‘a’ (from algorithm A) will be requested sooner than page ‘b’ (from algorithm B) (request time ‘b’ \>= request time ‘a’)  
+		Thus, we can replace ‘a’ with ‘b’ will not increase the number of misses in A  
+	A and B now agree for the first k+1 element requests without increasing misses
+
+Thus, proving that B (OPTFF) cannot have a larger number of misses than A (offline schedule), and is optimal. 
