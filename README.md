@@ -2,14 +2,14 @@ Names & IDs:
 -Stephanie Teipel: 69604935
 -Katie Boetig: 52055316
 
-
+##
 Instructions to Compile/build (if applicable):
 - No compilation is required
 -This project is written in Python 3
 - Python 3 must be installed on the system
 - The program uses only standard Python libraries (collections, sys), so no additional packages need to be installed
 
-
+##
 Instructions to run the program, including example commands:
 - Clone the repository
 	git clone https://github.com/sateipel/COP4533assignment2.git
@@ -17,24 +17,27 @@ Instructions to run the program, including example commands:
 	cd COP4533assignment2
 - Run the program using an input file
 	python src/main.py data/example.in
+##
+Assumptions ( (input/output format, dependencies, etc.): Input format:
 
-## Any assumptions (input/output format, dependencies, etc.):
+k m  
+r1 r2 r3 ... rm
 
- \-Input format(.in files):
- 	\-k m
- 	\-r1 r2 r3 ... rm
+Where:
 
- 	\-Where:
- 		\-( k ) \= cache capacity ( ( k \>= 1 ) )
-		\-( m ) \= number of requests
- 		\-( r\_1, .., r\_m ) \= sequence of integer IDs
+* ( k ) \= cache capacity ( ( k \>= 1 ) )  
+* ( m ) \= number of requests  
+* ( r\_1, .., r\_m ) \= sequence of integer IDs
 
- \-Output Format(.out files):
- 	\-FIFO  : \<number\_of\_misses\>
- 	\-LRU   : \<number\_of\_misses\>
-	\-OPTFF : \<number\_of\_misses\>
+Output format:
 
+FIFO  : \<number\_of\_misses\>
 
+LRU   : \<number\_of\_misses\>
+
+OPTFF : \<number\_of\_misses\>
+
+## 
 
 ## Question 1: Empirical Comparison
 
