@@ -1,81 +1,154 @@
 from collections import deque
-#You are given:
-#A cache of capacity ( k )
-#A sequence of ( m ) requests ( r_1, r_2,.., r_m )
-#For each request:
-#If the item is already in the cache, this is a hit.
-#Otherwise, this is a miss. Insert the item:
-#If the cache is not full, simply insert it.
-#If the cache is full, evict one item according to the policy.
+import sys
 
 
-#FIFO
-# Evict the item that has been in the cache the longest. (aka a queue)
-#declare the function 
-    #misses =0
-    #hits=0
-    #while item in requests:
-        #if item in queue:
-            #hit+=1
-        #else:
-            #miss+=1
-            #if cache is full:
-                #dequeue the first (oldest) item
-            #insert the new item (to the end)
-    #return misses
-    #return hits for initial testing
+def FIFO(k, requests):
+    """Return number of misses using FIFO eviction."""
+    misses = 0
+    q = deque()          # holds items in FIFO order
+    in_cache = set()     # fast membership test
 
-def FIFO(cache, requests):
-    misses=0
-    hits=0
-    queue=deque()
-    for request in requests:
-        if request in queue:
-            hits+=1
-        else:
-            misses+=1
-            if len(queue)==cache:
-                queue.popleft()
-            queue.append(request)
+    for r in requests:
+        if r in in_cache:
+            continue  # hit
+        misses += 1
+
+        # miss: insert (evict if full)
+        if len(q) == k:
+            old = q.popleft()
+            in_cache.remove(old)
+
+        q.append(r)
+        in_cache.add(r)
+
     return misses
 
-#LRU
-#Evict the item whose most recent access time is the oldest.
-#modify the queue from FIFO so that it is updated when items are accessed again (move to the end of the queue)
-def LRU(cache, requests):
-    misses=0
-    hits=0
-    queue=deque()
-    for request in requests:
-        #remove from old position and add to end of the queue
-        #updating the queue like this keeps the ordering updated, allowing the oldest item to be popped
-        if request in queue:
-            queue.remove(request)
-            queue.append(request)
-            hits+=1
-        #a miss is the same as the FIFO
-        else:
-            misses+=1
-            if len(queue)==cache:
-                queue.popleft()
-            queue.append(request)
-    #return only misses once more is written, this is just for testing
-    return misses, hits
+
+def LRU(k, requests):
+    """Return number of misses using LRU eviction."""
+    misses = 0
+    q = deque()          # left = least recent, right = most recent
+    in_cache = set()
+
+    for r in requests:
+        if r in in_cache:
+            # hit: refresh recency
+            q.remove(r)
+            q.append(r)
+            continue
+
+        # miss
+        misses += 1
+        if len(q) == k:
+            old = q.popleft()
+            in_cache.remove(old)
+
+        q.append(r)
+        in_cache.add(r)
+
+    return misses
 
 
-#OPTFF (Belady’s Farthest-in-Future, optimal offline)
-#Among items currently in the cache, evict the one whose next request occurs farthest in the future (or never occurs again).
+def OPTFF(k, requests):
+    """
+    Belady's farthest-in-future (optimal offline).
+    Evict item whose next use is farthest in the future (or never used again).
+    """
+    misses = 0
+    cache = set()
+
+    # Precompute for each position i, where each item appears next.
+    # Build lists of positions for each value.
+    positions = {}
+    for i, r in enumerate(requests):
+        positions.setdefault(r, []).append(i)
+
+    # Pointers into those lists so we can know "next occurrence" quickly
+    ptr = {r: 0 for r in positions}
+
+    def next_use(item, current_index):
+        """Return the next index > current_index when item is requested, or +inf if never."""
+        lst = positions[item]
+        p = ptr[item]
+        # advance pointer past current_index
+        while p < len(lst) and lst[p] <= current_index:
+            p += 1
+        ptr[item] = p
+        if p >= len(lst):
+            return float("inf")
+        return lst[p]
+
+    for i, r in enumerate(requests):
+        # update pointer for r (so next_use works correctly)
+        next_use(r, i - 1)  # ensure ptr[r] is at least at current
+
+        if r in cache:
+            # hit
+            continue
+
+        # miss
+        misses += 1
+
+        if len(cache) < k:
+            cache.add(r)
+            continue
+
+        # cache full: choose eviction victim
+        victim = None
+        farthest = -1
+
+        for item in cache:
+            nu = next_use(item, i)
+            if nu > farthest:
+                farthest = nu
+                victim = item
+
+        cache.remove(victim)
+        cache.add(r)
+
+    return misses
 
 
-#main not yet implemented for input/output files 
-#this is just to test functionality of functions as its created 
+def read_input_file(path):
+    """
+    Input format:
+      k m
+      r1 r2 r3 ... rm
+    """
+    with open(path, "r") as f:
+        tokens = f.read().split()
+
+    if len(tokens) < 2:
+        raise ValueError("Input file must start with: k m")
+
+    k = int(tokens[0])
+    m = int(tokens[1])
+
+    req_tokens = tokens[2:]
+    if len(req_tokens) < m:
+        raise ValueError(f"Expected {m} requests, found {len(req_tokens)}")
+
+    requests = list(map(int, req_tokens[:m]))
+    return k, m, requests
+
+
 def main():
-    cache=3
-    requests=[1,2,3,1,2,3,4,1,2,3]
-    fifo=FIFO(cache, requests)
-    print(f"FIFO : {fifo}")
-    misses, hits=LRU(cache, requests)
-    print(f"LRU misses: {misses}, hits: {hits}")
-#this LRU output gives 7 misses and 3 hits (correct)
+    # Expect: python src/main.py path/to/input.in
+    if len(sys.argv) != 2:
+        print("Usage: python src/main.py <input_file>")
+        sys.exit(1)
 
-if __name__ == "__main__": main()
+    infile = sys.argv[1]
+    k, m, requests = read_input_file(infile)
+
+    fifo_misses = FIFO(k, requests)
+    lru_misses = LRU(k, requests)
+    optff_misses = OPTFF(k, requests)
+
+    print(f"FIFO  : {fifo_misses}")
+    print(f"LRU   : {lru_misses}")
+    print(f"OPTFF : {optff_misses}")
+
+
+if __name__ == "__main__":
+    main()

@@ -1,18 +1,22 @@
 Names & IDs:
 -Stephanie Teipel: 69604935
--Katie Boetig: UFID
+-Katie Boetig: 52055316
 
 
-Instructions to Compile/build (if applicable:
--...
--...
--...
+Instructions to Compile/build (if applicable):
+- No compilation is required
+-This project is written in Python 3
+- Python 3 must be installed on the system
+- The program uses only standard Python libraries (collections, sys), so no additional packages need to be installed
 
 
 Instructions to run the program, including example commands:
--...
--...
--...
+- Clone the repository
+	git clone https://github.com/sateipel/COP4533assignment2.git
+- Navigate into the project directory
+	cd COP4533assignment2
+- Run the program using an input file
+	python src/main.py data/example.in
 
 
 Any assumptions (input/output format, dependencies, etc.):
@@ -36,26 +40,36 @@ For each file, report the number of cache misses for each policy.
 
 | Input File | k | m | FIFO | LRU | OPTFF |
 | :---- | :---- | :---- | :---- | :---- | :---- |
-| File1 |  |  |  |  |  |
-| File2 |  |  |  |  |  |
-| File3 |  |  |  |  |  |
+| File1 | 3 | 50 | 38 | 42 | 26 |
+| File2 | 4 | 50 | 38 | 38 | 16 |
+| File3 | 2 | 50 | 50 | 50 | 35 |
 
 Briefly comment:
 
-* Does OPTFF have the fewest misses?  
-* How does FIFO compare to LRU?
+* **Does OPTFF have the fewest misses?**  
+Yes. In all three test files, OPTFF produces fewer cache misses than FIFO and LRU. This is expected because OPTFF (Belady’s algorithm) uses knowledge of the future request sequence and evicts the page whose next use occurs farthest in the future.
+
+* **How does FIFO compare to LRU?**  
+FIFO and LRU perform similarly in some cases but can differ depending on the request pattern. In File1, FIFO performs slightly better than LRU, while in File2 and File3 they perform the same. This shows that LRU does not always outperform FIFO and the effectiveness of each policy depends on the structure of the request sequence.
 
 ## Question 2: Bad Sequence for LRU or FIFO
 
 For ( k \= 3 ), investigate whether there exists a request sequence for which OPTFF incurs **strictly fewer misses** than LRU (or FIFO).
 
-* If such a sequence exists:  
-  * Construct one.  
-  * Compute and report the miss counts for both policies.  
-* If you believe no such sequence exists for the policy you chose:  
-  * Provide a clear justification.
+For k = 3, the following request sequence shows that OPTFF can incur strictly fewer misses than LRU:
 
-In either case, briefly explain your reasoning.
+1 2 3 4 1 2 5 1 2 3 4 5
+
+Miss counts:
+
+| Policy | Misses |
+|------|------|
+| LRU | 10 |
+| OPTFF | 7 |
+
+Explanation:
+
+LRU makes decisions based only on past accesses, while OPTFF knows the future request sequence. In this sequence, OPTFF evicts the page that will be used farthest in the future, while LRU sometimes evicts a page that will be needed soon. Because of this, OPTFF produces strictly fewer cache misses.
 
 ## Question 3: Prove OPTFF is Optimal
 
