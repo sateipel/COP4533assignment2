@@ -1,6 +1,26 @@
 from collections import deque
 import sys
 
+"""
+Cache Replacement Policy Simulator
+
+Implements three cache eviction policies:
+1. FIFO (First-In First-Out)
+2. LRU (Least Recently Used)
+3. OPTFF (Belady's Farthest-in-Future)
+
+The program reads an input file containing:
+    k m
+    r1 r2 r3 ... rm
+
+Where:
+    k = cache capacity
+    m = number of requests
+    r_i = sequence of request IDs
+
+It outputs the number of cache misses for each policy.
+"""
+
 
 def FIFO(k, requests):
     """Return number of misses using FIFO eviction."""
