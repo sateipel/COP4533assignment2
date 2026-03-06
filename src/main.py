@@ -151,6 +151,9 @@ def read_input_file(path):
     requests = list(map(int, req_tokens[:m]))
     return k, m, requests
 
+# Main entry point of the program
+# Reads an input file, runs the three cache policies
+# and prints the number of cache misses for each
 
 def main():
     # Expect: python src/main.py path/to/input.in
