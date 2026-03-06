@@ -19,18 +19,32 @@ Instructions to run the program, including example commands:
 	python src/main.py data/example.in
 
 
-Any assumptions (input/output format, dependencies, etc.):
--Input format(.in files):
-	-k m
-	-r1 r2 r3 ... rm
-	-Where:
-		-( k ) = cache capacity ( ( k >= 1 ) )
-		-( m ) = number of requests
-		-( r_1, .., r_m ) = sequence of integer IDs
--Output Format(.out files):
-	-FIFO  : <number_of_misses>
-	-LRU   : <number_of_misses>
-	-OPTFF : <number_of_misses>
+## Any assumptions (input/output format, dependencies, etc.):
+
+## \-Input format(.in files):
+
+## 	\-k m
+
+## 	\-r1 r2 r3 ... rm
+
+## 	\-Where:
+
+## 		\-( k ) \= cache capacity ( ( k \>= 1 ) )
+
+## 		\-( m ) \= number of requests
+
+## 		\-( r\_1, .., r\_m ) \= sequence of integer IDs
+
+## \-Output Format(.out files):
+
+## 	\-FIFO  : \<number\_of\_misses\>
+
+## 	\-LRU   : \<number\_of\_misses\>
+
+## 	\-OPTFF : \<number\_of\_misses\>
+
+## 
+
 
 
 ## Question 1: Empirical Comparison
